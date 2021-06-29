@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
+import {IState as Props} from '../App'
 
-const AddToList = () => {
+interface IProps {
+  people: Props["people"]
+  setPeople: React.Dispatch<React.SetStateAction<Props["people"]>>
+}
+const AddToList: React.FC<IProps> = ({ people, setPeople }) => {
 
   const [input, setInput] = useState({
       name: "",
@@ -10,12 +15,33 @@ const AddToList = () => {
     }
   )
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setInput({
       ...input,
       [e.target.name]: e.target.value
     })
   }
+
+  const handleClick = (): void => {
+    if (!input.name || !input.age || !input.img) {
+      return
+    }
+    setPeople([
+      ...people,
+      {
+        name: input.name,
+        age: Number(input.age),
+        url: input.img,
+        note: input.note
+      }
+    ])
+    setInput({
+      name: "",
+      age: "",
+      note: "",
+      img: ""
+    })
+  } 
 
   return (
     <div className="AddToList">
@@ -28,7 +54,7 @@ const AddToList = () => {
         onChange={handleChange}
       />
       <input
-        type="text"
+        type="number"
         placeholder="Age"
         className="AddToList-input"
         value={input.age}
@@ -50,6 +76,12 @@ const AddToList = () => {
         name="note"
         onChange={handleChange }
       />
+      <button
+        className="AddToList-btn"
+        onClick={handleClick}
+      >
+        Add To List
+      </button>
     </div>
   )
 }
